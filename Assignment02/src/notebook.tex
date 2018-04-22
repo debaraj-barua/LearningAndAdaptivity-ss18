@@ -141,7 +141,7 @@
     \def\gt{>}
     \def\lt{<}
     % Document parameters
-    \title{02\_Exercise3\_MaxL}
+    \title{02\_Exercise1\_MaxL}
     
     
     
@@ -280,36 +280,234 @@
     
 
     
-    GIVEN: Samples \(0,1,0,0,1,0\) from a binomial distribution which has
-the form: P(x=0)=(1-\(\mu\)), P(x=1)=\(\mu\)
+    \section{Assignment 02}\label{assignment-02}
 
-    REQUESTED: What is the maximum likelihood estimate of \(\mu\) Hint: you
-can use SymPy to compute the derivities symboliclly
+\subsection{Exercise 01}\label{exercise-01}
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}5}]:} \PY{k+kn}{import} \PY{n+nn}{sympy} \PY{k}{as} \PY{n+nn}{sp}
+{\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+        \PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+        \PY{k+kn}{from} \PY{n+nn}{matplotlib} \PY{k}{import} \PY{n}{cm}
+        \PY{k+kn}{import} \PY{n+nn}{scipy} \PY{k}{as} \PY{n+nn}{sp}
+        \PY{k+kn}{import} \PY{n+nn}{seaborn} \PY{k}{as} \PY{n+nn}{sns}
+        \PY{k+kn}{from} \PY{n+nn}{mpl\PYZus{}toolkits}\PY{n+nn}{.}\PY{n+nn}{mplot3d} \PY{k}{import} \PY{n}{Axes3D}
+        \PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{stats} \PY{k}{import} \PY{n}{multivariate\PYZus{}normal}
+        \PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
 \end{Verbatim}
 
 
-    In the given samples:
+    Let's suppose we have a set of observations \(x=(x_1,…,x_N)^T\), that
+are drawn independent and identically distributed (i.i.d) from a
+Gaussian distribution with unknown mean \(\mu\) and variance
+\(\sigma^2\)
 
-Number of ones : 2\\
-Number of zeros : 4
+    For this example, we are going to assume that the unknown parameters are
+\(\mu\)=2 and \(\sigma^2\)=25 and the number of samples N=100.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}6}]:} \PY{n}{p}\PY{o}{=}\PY{n}{sp}\PY{o}{.}\PY{n}{symbols}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{p}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-        \PY{n}{y}\PY{o}{=}\PY{n}{sp}\PY{o}{.}\PY{n}{Function}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{p}\PY{p}{)}
-        \PY{n}{y}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{p}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{4}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{p}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{4}\PY{p}{)}
-        \PY{n}{q}\PY{o}{=}\PY{n}{sp}\PY{o}{.}\PY{n}{diff}\PY{p}{(}\PY{n}{y}\PY{p}{,}\PY{n}{p}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
-        \PY{n}{sp}\PY{o}{.}\PY{n}{solve}\PY{p}{(}\PY{n}{q}\PY{p}{,}\PY{n}{p}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}2}]:} \PY{n}{mean} \PY{o}{=} \PY{l+m+mi}{2}
+        \PY{n}{variance} \PY{o}{=} \PY{l+m+mi}{25}
+        \PY{n}{std\PYZus{}dev} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{25}\PY{p}{)}
+        \PY{n}{N} \PY{o}{=} \PY{l+m+mi}{100}
 \end{Verbatim}
 
 
-\begin{Verbatim}[commandchars=\\\{\}]
-{\color{outcolor}Out[{\color{outcolor}6}]:} [0, 1/3, 1]
+    \subsubsection{Task1:}\label{task1}
+
+Plot this (unknown) distribution together with the samples in the range
+\([-20, 20]\).
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}3}]:} \PY{n}{distribution} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{normal}\PY{p}{(}\PY{n}{loc} \PY{o}{=} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{scale} \PY{o}{=} \PY{n}{std\PYZus{}dev}\PY{p}{,} \PY{n}{size}\PY{o}{=}\PY{n}{N}\PY{p}{)}
+        
+        \PY{n}{data}\PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{hstack}\PY{p}{(}\PY{p}{(}\PY{p}{(}\PY{n}{distribution}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{np}\PY{o}{.}\PY{n}{newaxis}\PY{p}{]}\PY{p}{)}\PY{p}{,}
+                         \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{n}{distribution}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{np}\PY{o}{.}\PY{n}{newaxis}\PY{p}{]}\PY{o}{.}\PY{n}{shape}\PY{p}{)}\PY{p}{)}\PY{p}{)} 
+        
+        \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{20}\PY{p}{,}\PY{l+m+mi}{21}\PY{p}{,}\PY{l+m+mi}{100}\PY{p}{)}\PY{p}{,}
+                 \PY{n}{plt}\PY{o}{.}\PY{n}{mlab}\PY{o}{.}\PY{n}{normpdf}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{20}\PY{p}{,}\PY{l+m+mi}{21}\PY{p}{,}\PY{l+m+mi}{100}\PY{p}{)}\PY{p}{,} 
+                                  \PY{n}{mean}\PY{p}{,} \PY{n}{std\PYZus{}dev}\PY{p}{)}\PY{p}{,}
+                 \PY{n}{label} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Gaussian distribution}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        
+        \PY{n}{sns}\PY{o}{.}\PY{n}{distplot}\PY{p}{(}\PY{n}{distribution}\PY{p}{,}\PY{n}{hist}\PY{o}{=}\PY{k+kc}{False}\PY{p}{,} \PY{n}{rug}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,}
+                     \PY{n}{label} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Generated Gaussian plot from samples}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        
+        \PY{n}{plt}\PY{o}{.}\PY{n}{scatter}\PY{p}{(}\PY{n}{data}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,}\PY{n}{data}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{yellow}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{samples}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{ylim}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.02}\PY{p}{,}\PY{l+m+mf}{0.1}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{n}{loc}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{center left}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{bbox\PYZus{}to\PYZus{}anchor}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mf}{0.5}\PY{p}{)}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
 \end{Verbatim}
-            
-    Hence the maximum likelihood estimate of \(\mu\) is 1/3
+
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_6_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \subsubsection{Task2:}\label{task2}
+
+\begin{itemize}
+\tightlist
+\item
+  Implement the likelihood function in python (you can simply use the
+  existing python implementations)
+\item
+  Use a general optimization method to find the values for \(\mu\) and
+  \(\sigma^2\).
+\end{itemize}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}4}]:} \PY{n}{mu\PYZus{}calculated}\PY{p}{,} \PY{n}{std\PYZus{}dev\PYZus{}calulated} \PY{o}{=} \PY{n}{sp}\PY{o}{.}\PY{n}{stats}\PY{o}{.}\PY{n}{norm}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{distribution}\PY{p}{)}
+        
+        \PY{n+nb}{print} \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Calculated Mean: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{mu\PYZus{}calculated}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{; Calculated Variance (sigma\PYZca{}2): }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{std\PYZus{}dev\PYZus{}calulated}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Calculated Mean:  2.432037837648402 ; Calculated Variance (sigma\^{}2):  20.61522552087914
+
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}5}]:} \PY{n}{x\PYZus{}i} \PY{o}{=} \PY{n}{data}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]}
+        \PY{n}{N\PYZus{}samples} \PY{o}{=} \PY{p}{(}\PY{n}{x\PYZus{}i}\PY{o}{.}\PY{n}{size}\PY{p}{)}
+        
+        \PY{n}{sample\PYZus{}mean} \PY{o}{=} \PY{l+m+mi}{1}\PY{o}{/}\PY{n}{N\PYZus{}samples}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{x\PYZus{}i}\PY{p}{)}
+        \PY{n}{sample\PYZus{}variance} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{/}\PY{p}{(}\PY{n}{N\PYZus{}samples}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{(}\PY{n}{x\PYZus{}i}\PY{o}{\PYZhy{}}\PY{n}{sample\PYZus{}mean}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}
+        
+        \PY{n+nb}{print} \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Sample Mean: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{sample\PYZus{}mean}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{; Sample Variance: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{sample\PYZus{}variance}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Sample Mean:  2.432037837648402 ; Sample Variance:  20.823460122100144
+
+    \end{Verbatim}
+
+    \subsubsection{Task3:}\label{task3}
+
+Given: \(\mu = \begin{bmatrix}  0\\[0.3em]  0\\[0.3em]  \end{bmatrix}\)
+\(\Sigma = \begin{bmatrix}  0.5 & 0\\[0.3em]  0 & 0.5\\[0.3em]  \end{bmatrix}\)
+1. Visualise a Gaussian with the given parameters. 2. Visualise a
+marginal Gaussian. 3. Visualise a slice of Gaussian.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}6}]:} \PY{c+c1}{\PYZsh{}https://stackoverflow.com/questions/38698277/plot\PYZhy{}normal\PYZhy{}distribution\PYZhy{}in\PYZhy{}3d}
+        
+        \PY{n}{mu} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+        \PY{n}{sigma} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{l+m+mf}{0.5}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mf}{0.5}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+        \PY{n}{data} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{multivariate\PYZus{}normal}\PY{p}{(}\PY{n}{mu}\PY{p}{,} \PY{n}{sigma}\PY{p}{,} \PY{l+m+mi}{200}\PY{p}{)}
+        \PY{n}{df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{data}\PY{p}{,} \PY{n}{columns}\PY{o}{=}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{x}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{y}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}
+        
+        
+        \PY{n}{N} \PY{o}{=} \PY{l+m+mi}{100}
+        \PY{n}{X} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{N}\PY{p}{)}
+        \PY{n}{Y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{N}\PY{p}{)}
+        \PY{n}{X}\PY{p}{,} \PY{n}{Y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{meshgrid}\PY{p}{(}\PY{n}{X}\PY{p}{,}\PY{n}{Y}\PY{p}{)}
+        \PY{n}{xy} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{empty}\PY{p}{(}\PY{n}{X}\PY{o}{.}\PY{n}{shape} \PY{o}{+} \PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{p}{)}\PY{p}{)}
+        \PY{n}{xy}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{n}{X}\PY{p}{;} \PY{n}{xy}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{n}{Y}
+        
+        \PY{n}{Z} \PY{o}{=} \PY{n}{multivariate\PYZus{}normal}\PY{o}{.}\PY{n}{pdf}\PY{p}{(}\PY{n}{xy}\PY{p}{,}\PY{n}{mu}\PY{p}{,}\PY{n}{sigma}\PY{p}{)}
+        
+        
+        \PY{n}{fig} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{p}{)}
+        \PY{n}{ax} \PY{o}{=} \PY{n}{fig}\PY{o}{.}\PY{n}{gca}\PY{p}{(}\PY{n}{projection}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{3d}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{plot\PYZus{}surface}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{Y}\PY{p}{,} \PY{n}{Z} \PY{p}{,}\PY{n}{cmap}\PY{o}{=}\PY{n}{cm}\PY{o}{.}\PY{n}{coolwarm}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Gaussian plot for given mean and covariance}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{X axis}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Y axis}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}zlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Z axis}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_11_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}7}]:} \PY{c+c1}{\PYZsh{} Marginal Gaussians against the two variables}
+        
+        \PY{n}{sns}\PY{o}{.}\PY{n}{jointplot}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{x}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{y}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{data}\PY{o}{=}\PY{n}{df}\PY{p}{,} \PY{n}{kind}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{kde}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_12_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}8}]:} \PY{c+c1}{\PYZsh{}Plots for slices of the Gaussian along x, y and z axes}
+        \PY{n}{fig} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{p}{)}
+        \PY{n}{ax} \PY{o}{=} \PY{n}{fig}\PY{o}{.}\PY{n}{gca}\PY{p}{(}\PY{n}{projection}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{3d}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{contour}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{Y}\PY{p}{,} \PY{n}{Z}\PY{p}{,} \PY{n}{zdir}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{z}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{offset}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{cmap}\PY{o}{=}\PY{n}{cm}\PY{o}{.}\PY{n}{coolwarm}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{contour}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{Y}\PY{p}{,} \PY{n}{Z}\PY{p}{,} \PY{n}{zdir}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{offset}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{cmap}\PY{o}{=}\PY{n}{cm}\PY{o}{.}\PY{n}{coolwarm}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{contour}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{Y}\PY{p}{,} \PY{n}{Z}\PY{p}{,} \PY{n}{zdir}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{x}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{offset}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{cmap}\PY{o}{=}\PY{n}{cm}\PY{o}{.}\PY{n}{coolwarm}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Contour plots for slices of Gaussian along the three axes}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{X axis}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Y axis}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}zlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Z axis}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_13_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \subsubsection{Task4:}\label{task4}
+
+\textbf{Given}:
+
+Number of samples is 1000 from them 330 samples are labeled as class
+\(A\) and 670 samples are labeled as class \(B\). There are 2 features
+\(X1\) and \(X2\). It is observed that \(p(A,X1)\)=248, \(p(A,X2)\)=82,
+\(p(B,X1)\)=168, \(p(B,X2)\)=502
+
+\textbf{Compute}:
+
+\begin{itemize}
+\tightlist
+\item
+  Prior \(p(A)\), \(p(B)\)
+\item
+  Likelihood \(p(X1|A)\), \(p(X1|B)\)
+\item
+  Posterior \(p(A|X1)\)
+\end{itemize}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}9}]:} \PY{n}{N} \PY{o}{=} \PY{l+m+mi}{1000}
+        \PY{n}{N\PYZus{}A} \PY{o}{=} \PY{l+m+mi}{330}
+        \PY{n}{N\PYZus{}B} \PY{o}{=} \PY{l+m+mi}{670}
+        
+        \PY{n}{P\PYZus{}AX1} \PY{o}{=}  \PY{l+m+mf}{0.248}
+        \PY{n}{P\PYZus{}AX2} \PY{o}{=} \PY{l+m+mf}{0.082}
+        \PY{n}{P\PYZus{}BX1} \PY{o}{=} \PY{l+m+mf}{0.168}
+        \PY{n}{p\PYZus{}BX2} \PY{o}{=} \PY{l+m+mf}{0.502}
+        
+        \PY{n}{P\PYZus{}A} \PY{o}{=} \PY{n}{N\PYZus{}A}\PY{o}{/}\PY{n}{N}
+        \PY{n}{P\PYZus{}B} \PY{o}{=} \PY{n}{N\PYZus{}B}\PY{o}{/}\PY{n}{N}
+        
+        \PY{n}{P\PYZus{}X1\PYZus{}A} \PY{o}{=} \PY{n}{P\PYZus{}AX1} \PY{o}{/} \PY{n}{P\PYZus{}A}
+        \PY{n}{P\PYZus{}X1\PYZus{}B} \PY{o}{=} \PY{n}{P\PYZus{}BX1} \PY{o}{/} \PY{n}{P\PYZus{}B}
+        
+        \PY{n}{P\PYZus{}A\PYZus{}X1} \PY{o}{=} \PY{n}{P\PYZus{}AX1}\PY{o}{/}\PY{p}{(}\PY{p}{(}\PY{n}{P\PYZus{}X1\PYZus{}A} \PY{o}{*} \PY{n}{P\PYZus{}A}\PY{p}{)} \PY{o}{+} \PY{p}{(}\PY{n}{P\PYZus{}X1\PYZus{}B} \PY{o}{*} \PY{n}{P\PYZus{}B}\PY{p}{)}\PY{p}{)}
+        
+        \PY{n+nb}{print} \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Prior P(A)=}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{P\PYZus{}A}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{,  P(B)=}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{P\PYZus{}B}\PY{p}{)}
+        \PY{n+nb}{print} \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Likelihood P(X1|A)=}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{P\PYZus{}X1\PYZus{}A}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{,  P(X1|B)=}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{P\PYZus{}X1\PYZus{}B}\PY{p}{)}
+        \PY{n+nb}{print} \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Posterior P(A|X1)=}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{P\PYZus{}A\PYZus{}X1}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Prior P(A)= 0.33 ,  P(B)= 0.67
+Likelihood P(X1|A)= 0.7515151515151515 ,  P(X1|B)= 0.2507462686567164
+Posterior P(A|X1)= 0.5961538461538461
+
+    \end{Verbatim}
 
 
     % Add a bibliography block to the postdoc
